@@ -1,24 +1,32 @@
-import logo from './logo.svg';
+import React,{useState,useEffect} from 'react'
 import './App.css';
+import Menu from './components/menu';
+import Quiz from './components/quiz';
+import Score from './components/score';
+import {QuizContext} from "./Helpers/context"
+
 
 function App() {
+  const[gamestate,setgamestate]=new useState("menu")
+  const[score,setScore]=useState(0)
+  const[selection,setSelection]=useState([0,0,0])
+  useEffect(()=>{
+    const state=localStorage.getItem('gamestate')
+    if(state)
+     setgamestate(state)
+    const select=localStorage.getItem('selection')
+    if(select)
+      setSelection(select.split(","))
+  },[gamestate,setgamestate])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <QuizContext.Provider value={{gamestate,setgamestate,score,setScore,selection,setSelection}}>
+        {gamestate==="menu" && <Menu/>}
+        {gamestate==="quiz" && <Quiz/>}
+        {gamestate==="end" && <Score/>}
+      </QuizContext.Provider>
     </div>
+    
   );
 }
 
